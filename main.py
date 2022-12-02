@@ -3,10 +3,10 @@ from sandra_app import Pegasos
 
 def main():
     X, y = prepare_data("codon_usage.csv")
-    model = Pegasos(epochs=10, lambda1=1)
+    model = Pegasos(epochs=10000, lambda1=1)
     model.fit(X, y)
     predicted_label = model.predict(X)
-    model.accuracy(y, predicted_label)
+    model.accuracy(model.classes, predicted_label)
     # model.predict
 
 
