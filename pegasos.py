@@ -10,6 +10,8 @@ class Pegasos:
 		self.X: np.ndarray
 		self.y: np.ndarray
 		self.classes: dict = {}
+		self.class_nums_names: dict = {}
+		self.class_names_nums: dict = {}
 		self.w: np.ndarray
 
 	def fit(self, X:np.ndarray, y:np.ndarray):
@@ -33,24 +35,32 @@ class Pegasos:
 			error = 0
 			learning_rate = 1. / (self.lambda1*(epoch+1))
 			rand_sample_index = np.random.choice(n_samples, 1)[0]
-			sample_X, sample_y = self.X[rand_sample_index], class_nums[rand_sample_index]
+			sample_X, sample_y = self.X[rand_sample_index], self.classes[rand_sample_index]
 			score = self.w.dot(sample_X)
 
-			if class_nums*score < 1:
-				self.w = (1 - eta*self.lambda1)*self.w + eta*class_nums*self.x
+			print(sample_y)
+			if sample_y*score < 1:
+				self.w = (1 - learning_rate*self.lambda1)*self.w + learning_rate*sample_y*sample_X
 				error = 1
 			else:
-				self.w = (1 - eta*self.lambda1)*self.w
+				self.w = (1 - learning_rate*self.lambda1)*self.w
 
 			errors.append(error)
 
 		self.plot_errors(errors)
 
-	def find_classes(self) -> np.ndarray:
+	def find_classes(self) -> list:
 		class_nums: list = []
+		class_num = -1
+
 		for i, label in enumerate(self.y):
-			self.classes[i] = label 
-			class_nums.append(i - 1)
+			if label not in self.class_nums_names.values():
+				self.class_nums_names[class_num] = label
+				self.class_names_nums[label] = class_num
+				class_nums.append(class_num)
+				class_num += 2
+			self.classes[i] = self.class_names_nums[label]
+
 		return class_nums
 
 
