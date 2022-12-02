@@ -4,21 +4,26 @@ import matplotlib.pyplot as plt
 
 class Pegasos:
 	def __init__(self, n_iter:int = 10, lambda1:int = 1) -> None:
+		# Number of iterations
 		self.n_iter: int = n_iter
 		self.lambda1: int = lambda1
 		self.X: np.ndarray
 		self.y: np.ndarray
+		# Class index for index of each sample
 		self.classes: dict = {}
+		# Class names for every class number
 		self.class_nums_names: dict = {}
+		# Class number for every class name
 		self.class_names_nums: dict = {}
+		# Weights
 		self.w: np.ndarray
 
-	def fit(self, X:np.ndarray, y:np.ndarray):
+	def fit(self, X:np.ndarray, y:np.ndarray) -> None:
 		"""Fit data on pegasos svm.
 
 		Args:
 			X (np.ndarray): Features
-			y (np.ndarray): Class labels (-1 for negative class and +1 for positive class)
+			y (np.ndarray): Class labels
 		"""
 		self.X = X
 		self.y = y
@@ -45,7 +50,9 @@ class Pegasos:
 
 			errors.append(error)
 
-	def find_classes(self):
+	def find_classes(self) -> None:
+		"""Assign class numbers to classes and save a dictionary of both ways."""
+		# TODO adapt for multiclass
 		class_num = -1
 
 		for i, label in enumerate(self.y):
@@ -55,7 +62,16 @@ class Pegasos:
 				class_num += 2
 			self.classes[i] = self.class_names_nums[label]
 
-	def predict(self, X:np.ndarray):
+	def predict(self, X:np.ndarray) -> list:
+		"""Predict on features in X.
+
+		Args:
+			X (np.ndarray): Features for every sample to predict on
+
+		Returns:
+			list: class labels for every sample in X
+		"""		
+		# TODO adapt for multiclass
 		predicted_labels = []
 		for sample in X:
 			dot_product = 0
@@ -67,13 +83,3 @@ class Pegasos:
 				predicted_labels.append(-1)
 
 		return [self.class_nums_names[label_num] for label_num in predicted_labels]
-	# def plot_errors(self, errors):
-	# 	plt.bar(errors)
-	# 	# plt.ylim(0.5,1.5)
-	# 	# plt.axes().set_yticklabels([])
-	# 	# plt.xlabel('Epoch')
-	# 	# plt.ylabel('Misclassified')
-	# 	plt.show()
-		
-
-# Pegasos(epochs=20, lambda1=3)

@@ -13,7 +13,16 @@ def main():
 	y_pred = model.predict(X_test)
 	print(accuracy_score(y_test, y_pred))
 
-def prepare_data(filename):
+
+def prepare_data(filename: str) -> tuple:
+	"""Retrieve data for training and validation.
+
+	Args:
+		filename (_type_): Filename with the data for training.
+
+	Returns:
+		tuple: Train and test data.
+	"""
 	data = pd.read_csv(filename, low_memory=False)
 	data.fillna(0,inplace=True)
 	data = data[data['Kingdom'].isin(("bct", "vrl"))]
