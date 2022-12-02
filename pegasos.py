@@ -25,7 +25,7 @@ class Pegasos:
 		self.y = y
 
 		errors = []
-		class_nums = self.find_classes()
+		self.find_classes()
 		n_samples, n_features = self.X.shape[0], self.X.shape[1]
 
 		# Initialize the weight vector for the perceptron with zeros
@@ -47,29 +47,25 @@ class Pegasos:
 
 			errors.append(error)
 
-		self.plot_errors(errors)
+		print(self.w)
 
-	def find_classes(self) -> list:
-		class_nums: list = []
+	def find_classes(self):
 		class_num = -1
 
 		for i, label in enumerate(self.y):
 			if label not in self.class_nums_names.values():
 				self.class_nums_names[class_num] = label
 				self.class_names_nums[label] = class_num
-				class_nums.append(class_num)
 				class_num += 2
 			self.classes[i] = self.class_names_nums[label]
 
-		return class_nums
-
-
 	def plot_errors(self, errors):
-		plt.plot(errors, '|')
-		plt.ylim(0.5,1.5)
-		plt.axes().set_yticklabels([])
-		plt.xlabel('Epoch')
-		plt.ylabel('Misclassified')
-		plt.show()
+		# plt.plot(errors, '|')
+		# plt.ylim(0.5,1.5)
+		# plt.axes().set_yticklabels([])
+		# plt.xlabel('Epoch')
+		# plt.ylabel('Misclassified')
+		# plt.show()
+		pass
 
 # Pegasos(epochs=20, lambda1=3)
