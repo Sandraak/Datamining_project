@@ -13,12 +13,12 @@ from cheat_svm import CheatSVM
 def main():
 	X_train, X_test, y_train, y_test = prepare_data("codon_usage.csv")
 	
-	# print("PEGASOS normal (simple)")
-	# model = Pegasos(n_iter=100*len(X_train), lambda1=1)
-	# model.fit(X_train, y_train)
-	# y_pred = model.predict(X_test)
-	# print(accuracy_score(y_test, y_pred))
-	# print(classification_report(y_test, y_pred))
+	print("PEGASOS normal")
+	model = Pegasos(n_iter=100*len(X_train), lambda1=1)
+	model.fit(X_train, y_train)
+	y_pred = model.predict(X_test)
+	print(accuracy_score(y_test, y_pred))
+	print(classification_report(y_test, y_pred))
 
 	# print("PEGASOS kernel")
 	# model = PegasosKernel(n_iter=2000, lambda1=1)
