@@ -7,11 +7,11 @@ from sklearn.metrics import accuracy_score, classification_report
 
 from pegasos import Pegasos
 from pegasos_kernel import PegasosKernel
+from cheat_svm import CheatSVM
 
 
 def main():
 	X_train, X_test, y_train, y_test = prepare_data("codon_usage.csv")
-	# model = Pegasos(n_iter=10, lambda1=1)
 	
 	# print("PEGASOS normal (simple)")
 	# model = Pegasos(n_iter=100*len(X_train), lambda1=1)
@@ -20,12 +20,46 @@ def main():
 	# print(accuracy_score(y_test, y_pred))
 	# print(classification_report(y_test, y_pred))
 
-	print("PEGASOS kernel")
-	model = PegasosKernel(n_iter=2000, lambda1=1)
-	model.fit(X_train, y_train)
+	# print("PEGASOS kernel")
+	# model = PegasosKernel(n_iter=2000, lambda1=1)
+	# model.fit(X_train, y_train)
+	# y_pred = model.predict(X_test)
+	# print(accuracy_score(y_test, y_pred))
+	# print(classification_report(y_test, y_pred))
+
+	print("CheatSVM")
+	model = CheatSVM()
+		
+	train_classes: list = []
+	# Class names for every class number
+	class_nums_names: dict = {}
+	# Class number for every class name
+	class_names_nums: dict = {}
+	class_num = -1
+	for i, label in enumerate(y_train):
+		if label not in class_nums_names.values():
+			class_nums_names[class_num] = label
+			class_names_nums[label] = class_num
+			class_num += 2
+		train_classes.append(class_names_nums[label])
+
+	test_classes: list = []
+	# Class names for every class number
+	class_nums_names: dict = {}
+	# Class number for every class name
+	class_names_nums: dict = {}
+	class_num = -1
+	for i, label in enumerate(y_test):
+		if label not in class_nums_names.values():
+			class_nums_names[class_num] = label
+			class_names_nums[label] = class_num
+			class_num += 2
+		test_classes.append(class_names_nums[label])
+
+	model.fit(X_train, train_classes)
 	y_pred = model.predict(X_test)
-	print(accuracy_score(y_test, y_pred))
-	print(classification_report(y_test, y_pred))
+	print(accuracy_score(test_classes, y_pred))
+	print(classification_report(test_classes, y_pred))
 
 	print("SVM")
 	clf = svm.SVC()
