@@ -28,7 +28,6 @@ class Pegasos:
 		self.X = X
 		self.y = y
 
-		errors = []
 		self.find_classes()
 		n_samples, n_features = self.X.shape[0], self.X.shape[1]
 
@@ -36,19 +35,53 @@ class Pegasos:
 		self.w = np.zeros(n_features)
 
 		for i in range(self.n_iter):
-			error = 0
 			learning_rate = 1. / (self.lambda1*(i+1))
 			rand_sample_index = np.random.choice(n_samples, 1)[0]
 			sample_X, sample_y = self.X[rand_sample_index], self.classes[rand_sample_index]
 			score = self.w.dot(sample_X)
-
+			
 			if sample_y*score < 1:
 				self.w = (1 - learning_rate*self.lambda1)*self.w + learning_rate*sample_y*sample_X
-				error = 1
 			else:
 				self.w = (1 - learning_rate*self.lambda1)*self.w
 
-			errors.append(error)
+		# TODO look at improving the magnitude?
+		print(f"magnitude: {2/np.linalg.norm(self.w)}")
+
+
+	# def fit2(self, X:np.ndarray, y:np.ndarray, c:float = 0.001) -> None:	
+	# 	"""_summary_
+
+	# 	Args:
+	# 		X (np.ndarray): _description_
+	# 		y (np.ndarray): _description_
+	# 		c (float): learning rate?
+	# 	"""
+	# 	self.find_classes()
+	# 	n_samples, n_features = self.X.shape[0], self.X.shape[1]
+
+	# 	# Initialize the weight vector for the perceptron with zeros
+	# 	self.w = np.zeros(n_features)
+
+	# 	for i in range(1, self.n_iter):
+	# 		# n_iter = epochs
+	# 		rand_sample_index = np.random.choice(n_samples, 1)[0]
+	# 		nt = 1/(c*i)
+	# 		X_sample = self.X[rand_sample_index]
+	# 		next_w = np.zeros(len(X_sample))
+	# 		dot_product = 0
+
+	# 		for j in range(len(X_sample)):
+	# 			dot_product += self.w[j]*X_sample[j]
+
+	# 		if dot_product*self.classes[rand_sample_index] < 1:
+	# 			for j in range(len(X_sample)):
+	# 				next_w[j] = self.w[j] - nt*c*self.w[j] + nt*self.classes[rand_sample_index]*X_sample[j]
+
+	# 		else:
+	# 			for j in range(len(X_sample)):
+	# 				next_w[j] = self.w[j] - nt*c*self.w[j]
+        
 
 	def find_classes(self) -> None:
 		"""Assign class numbers to classes and save a dictionary of both ways."""
