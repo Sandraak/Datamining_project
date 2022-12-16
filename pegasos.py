@@ -1,5 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
+
+from sklearn.metrics import accuracy_score
 
 
 class Pegasos:
@@ -19,8 +20,17 @@ class Pegasos:
         self.w: np.ndarray
         # Bias
         self.b: float = 0
+        # Training accuracy
+        self.training_accuracy_x: list = []
+        self.training_accuracy_y: list = []
 
-    def fit(self, X:np.ndarray, y:np.ndarray) -> None:
+        self.validation_accuracy_x: list = []
+        self.validation_accuracy_y: list = []
+
+        self.magnitude_x: list = []
+        self.magnitude_y: list = []
+
+    def fit(self, X:np.ndarray, y:np.ndarray, X_test:np.ndarray, y_test:np.ndarray) -> None:
         """Fit data on pegasos svm.
 
         Args:
@@ -40,18 +50,19 @@ class Pegasos:
             learning_rate = 1. / (self.lambda1*(i+1))
             rand_sample_index = np.random.choice(n_samples, 1)[0]
             sample_X, sample_y = self.X[rand_sample_index], self.classes[rand_sample_index]
-            linear_model = np.dot(sample_X, self.w) + self.b 
+            linear_model = np.dot(sample_X, self.w) + self.b
             
             # TODO write about adding bias and how that improved the accuracy by adding the bias
             if sample_y*linear_model >= 1:
-                new_w = self.lambda1 * self.w
-                new_b = 0
+                self.w = self.lambda1 * self.w
             else:
-                new_w = self.lambda1 * self.w - np.dot(sample_y, sample_X)	
-                new_b =- sample_y
+                self.w = (1 - learning_rate*self.lambda1)*self.w + learning_rate*sample_y*sample_X
+                self.b -= learning_rate * (- sample_y)
 
-            self.w -= learning_rate * new_w
-            self.b -= learning_rate * new_b
+            if not i%50:
+                self.get_training_accuracy(i)
+                self.get_validation_accuracy(i, X_test, y_test)
+                self.get_magnitude(i)
 
         # TODO write about the magnitude (improved after adding bias)
         print(f"magnitude: {2/np.linalg.norm(self.w)}")
@@ -68,7 +79,24 @@ class Pegasos:
                 class_num += 2
             self.classes[i] = self.class_names_nums[label]
 
-    def predict(self, X:np.ndarray) -> list:
+    def get_training_accuracy(self, current_iter: int) -> None:
+        y_pred = self.predict(self.X)
+        acc = accuracy_score(self.y, y_pred)
+        self.training_accuracy_x.append(current_iter)
+        self.training_accuracy_y.append(acc)
+
+    def get_validation_accuracy(self, current_iter: int, X_test, y_test) -> None:
+        y_pred = self.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        self.validation_accuracy_x.append(current_iter)
+        self.validation_accuracy_y.append(acc)
+
+    def get_magnitude(self, current_iter: int) -> None:
+        magnitude = 2/np.linalg.norm(self.w)
+        self.magnitude_x.append(current_iter)
+        self.magnitude_y.append(magnitude)
+
+    def predict(self, X:np.ndarray, use_bias: bool = False) -> list:
         """Predict on features in X.
 
         Args:
@@ -83,6 +111,8 @@ class Pegasos:
             dot_product = 0
             for i in range(len(sample)):
                 dot_product += self.w[i] * sample[i]
+            if use_bias:
+                dot_product += self.b
             if dot_product >= 0:
                 predicted_labels.append(1)
             else:
