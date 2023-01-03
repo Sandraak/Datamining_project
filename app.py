@@ -35,6 +35,8 @@ def prepare_data(filename: str) -> tuple:
 	"""
 	data = pd.read_csv(filename, low_memory=False)
 	data.fillna(0,inplace=True)
+	print("kingdoms:")
+	print(len(set(data['Kingdom'])))
 	data = data[data['Kingdom'].isin(("bct", "vrl"))]
 	X = data.iloc[:,-64:].to_numpy()
 	y = data.iloc[:, 0].to_numpy()

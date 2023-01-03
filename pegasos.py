@@ -50,16 +50,17 @@ class Pegasos:
             learning_rate = 1. / (self.lambda1*(i+1))
             rand_sample_index = np.random.choice(n_samples, 1)[0]
             sample_X, sample_y = self.X[rand_sample_index], self.classes[rand_sample_index]
-            linear_model = np.dot(sample_X, self.w) + self.b
+            linear_model = np.dot(sample_X, self.w)
+            # linear_model = np.dot(sample_X, self.w) + self.b
             
             # TODO write about adding bias and how that improved the accuracy by adding the bias
             if sample_y*linear_model >= 1:
                 self.w = self.lambda1 * self.w
             else:
                 self.w = (1 - learning_rate*self.lambda1)*self.w + learning_rate*sample_y*sample_X
-                self.b -= learning_rate * (- sample_y)
+                # self.b -= learning_rate * (- sample_y)
 
-            if not i%50:
+            if not i%25:
                 self.get_training_accuracy(i)
                 self.get_validation_accuracy(i, X_test, y_test)
                 self.get_magnitude(i)
