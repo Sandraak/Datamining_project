@@ -18,9 +18,9 @@ def main() -> None:
 
 	train_pegasos(X_train, X_test, y_train, y_test, outfile, make_plots=False)
 
-	# train_kernalized_pegasos(X_train, X_test, y_train, y_test, outfile)
+	train_kernalized_pegasos(X_train, X_test, y_train, y_test, outfile)
 
-	# train_svm(X_train, X_test, y_train, y_test, outfile)
+	train_svm(X_train, X_test, y_train, y_test, outfile)
 
 def train_pegasos(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_test: np.ndarray, outfile: str, make_plots: bool) -> None:
 	"""Train multiple pegasos models with and without bias.
